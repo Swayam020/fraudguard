@@ -1,0 +1,32 @@
+# Pre-commit hooks configuration
+# Runs automatically before every git commit.
+# Manual run: pre-commit run --all-files
+
+repos:
+  # Built-in basic hygiene checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace          # strips trailing whitespace from lines
+      - id: end-of-file-fixer             # ensures files end with a newline
+      - id: check-yaml                    # validates YAML syntax
+      - id: check-toml                    # validates TOML syntax
+      - id: check-added-large-files       # blocks commits with files >500KB by default
+        args: ['--maxkb=500']
+      - id: check-merge-conflict          # blocks commits with unresolved merge markers
+      - id: detect-private-key            # blocks commits containing private SSH/PGP keys
+
+  # Black — Python formatter
+  - repo: https://github.com/psf/black
+    rev: 24.4.2
+    hooks:
+      - id: black
+        language_version: python3.12
+
+  # Ruff — Python linter (and additional formatting)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.10
+    hooks:
+      - id: ruff
+        args: [--fix]                    # auto-fix what ruff can
+      - id: ruff-format                   # ruff's own formatter (compatible with black)

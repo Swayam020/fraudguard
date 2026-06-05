@@ -61,5 +61,3 @@ FraudGuard tackles all three using a hybrid Graph Neural Network + Vector Search
 ## ⚙️ Setup
 
 > _Setup instructions coming as we build_
-
-
