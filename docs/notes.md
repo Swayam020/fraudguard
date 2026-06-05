@@ -17,3 +17,8 @@
 - from fraudguard.models import X doesn't work just because folders have __init__.py. Python needs src/ to be on sys.path — solved later with pip install -e . and pyproject.toml.
 - ADRs are immutable. To change a past decision, write a NEW ADR that supersedes the old one, and update the old one's Status to "Superseded by ADR-XXX".
 - Triple-backtick code blocks inside markdown files cause issues when pasted into nano. Use cat > file << 'EOF' heredoc method instead.
+
+## Phase 0 — Interview Answers
+
+- FastAPI vs Flask interview answer = async-native + Pydantic validation. Concrete I/O wait in this project = MongoDB vector query + GNN forward pass.
+- ADR-001 is the only ADR allowed to cover multiple decisions (the "stack snapshot"). Every later ADR covers ONE decision.
