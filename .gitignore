@@ -32,9 +32,12 @@ secrets/
 # ============================================
 # Data & models (too large for git)
 # ============================================
-data/raw/
-data/processed/
-data/external/
+data/raw/*
+data/processed/*
+data/external/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/external/.gitkeep
 *.csv
 *.parquet
 *.pkl
