@@ -60,4 +60,59 @@ FraudGuard tackles all three using a hybrid Graph Neural Network + Vector Search
 
 ## ⚙️ Setup
 
-> _Setup instructions coming as we build_
+### Prerequisites
+- Python 3.12+
+- Git
+- A GitHub account (for cloning)
+
+### Local development setup
+
+Clone the repo:
+
+​```bash
+git clone git@github.com:Swayam020/fraudguard.git
+cd fraudguard
+​```
+
+Create and activate a virtual environment:
+
+​```bash
+python3 -m venv venv
+source venv/bin/activate   # Linux/macOS
+# OR
+venv\Scripts\activate      # Windows
+​```
+
+Install dependencies:
+
+​```bash
+pip install --upgrade pip
+pip install -r requirements.txt
+​```
+
+Install pre-commit hooks (one-time, per clone):
+
+​```bash
+pre-commit install
+​```
+
+Verify the setup:
+
+​```bash
+pre-commit run --all-files
+​```
+
+All hooks should report `Passed` or `Skipped`. If anything `Failed`, see the error message and re-run.
+
+### Project structure
+
+​```
+fraudguard/
+├── src/fraudguard/    # Application source code
+├── tests/             # Pytest test suite
+├── notebooks/         # Jupyter notebooks for EDA
+├── data/              # PaySim raw + processed (gitignored)
+├── dashboard/         # Streamlit monitoring UI
+├── docs/              # Architecture, ADRs, glossary
+└── scripts/           # Standalone runnable scripts
+​```
