@@ -1,6 +1,10 @@
 # FraudGuard dependencies
-# Packages will be added per phase as needed.
+# Packages added per phase as needed.
 # Install with: pip install -r requirements.txt
 
 # === Dev tooling ===
 pre-commit==3.7.1
+
+# === Phase 1: utils ===
+httpx==0.28.1
+python-dotenv==1.2.2
