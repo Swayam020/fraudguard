@@ -83,3 +83,4 @@ htmlcov/
 # ============================================
 Thumbs.db
 desktop.ini
+.env
