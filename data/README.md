@@ -20,14 +20,18 @@ This directory holds all dataset files used by FraudGuard. Contents are **gitign
 ## Reproducing from a clean clone
 
 ```bash
-# 1. Fetch PaySim (requires kaggle CLI auth — see Phase 2.2)
+# 1. Configure Kaggle CLI (one-time setup)
+#    - Create legacy API key at https://www.kaggle.com/settings (API section)
+#    - mkdir -p ~/.kaggle && mv ~/Downloads/kaggle.json ~/.kaggle/
+#    - chmod 600 ~/.kaggle/kaggle.json
+#    - Kaggle phone-verification required for API downloads.
+
+# 2. Fetch PaySim (downloads, unzips, hashes; ~470 MB)
 python scripts/download_paysim.py
 
-# 2. Build splits
+# 3. Build splits
 python -m fraudguard.data.build
 ```
-
-After step 2, `processed/{train,val,test}.parquet` should exist. The build script is deterministic given `config.random_seed`.
 
 ## What does **not** belong here
 
