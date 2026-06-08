@@ -38,6 +38,8 @@ data/external/*
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 !data/external/.gitkeep
+!data/processed/baselines/
+!data/processed/baselines/.gitkeep
 *.csv
 *.parquet
 *.pkl
