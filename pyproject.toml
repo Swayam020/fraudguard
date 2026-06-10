@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fraudguard"
+version = "0.1.0"
+description = "Heterogeneous GAT for transaction fraud detection on PaySim"
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "Swayam Maheshwari" }]
+license = { text = "MIT" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
