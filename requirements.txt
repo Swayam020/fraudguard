@@ -11,3 +11,5 @@ python-dotenv==1.2.2
 
 # === Phase 2: data ===
 kaggle==2.2.1
+pandas==2.2.3
+pyarrow==18.1.0
