@@ -22,3 +22,17 @@
 
 - FastAPI vs Flask interview answer = async-native + Pydantic validation. Concrete I/O wait in this project = MongoDB vector query + GNN forward pass.
 - ADR-001 is the only ADR allowed to cover multiple decisions (the "stack snapshot"). Every later ADR covers ONE decision.
+
+## Phase 2 — Data Foundations (completed)
+
+- kaggle CLI: legacy API key at ~/.kaggle/kaggle.json, chmod 600 required. Never cat secrets to screen.
+- SHA-256 pinning: paysim.csv = 16910f90...eea6b. Script fails loudly on upstream change.
+- Heredocs corrupt large files in terminal; use python with open().write() instead.
+- pip install -e . requires pyproject.toml AND __init__.py in every package dir (namespace packages have __file__=None).
+- mergesort (stable) for reproducible sorts; quicksort is not stable.
+- log1p over log: handles amount=0.
+- Temporal split, never random: fraud is forecast-shaped. Assertions: train.step.max() <= val.step.min().
+- No stratification within temporal split — would require shuffling = leakage. Report natural rates instead.
+- Pipeline: subsample -> features -> clean -> split. Each stage hash-verified deterministic.
+- Test fraud counts are small (train 123 / val 13 / test 11) — PR-AUC variance risk, flagged in ADR-002.
+- black reformat-then-abort on first commit is normal: re-add, re-commit.
