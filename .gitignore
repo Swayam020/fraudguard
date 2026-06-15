@@ -86,3 +86,7 @@ htmlcov/
 Thumbs.db
 desktop.ini
 .env
+
+# Phase 3.8: persisted baseline artifacts (regenerable via persist_baseline)
+data/processed/baselines/*
+!data/processed/baselines/.gitkeep
