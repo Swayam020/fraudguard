@@ -70,6 +70,8 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 
     out["isFraud"] = df["isFraud"].astype("int8")
     out["step"] = df["step"].astype("int16")
+    out["nameOrig"] = df["nameOrig"]
+    out["nameDest"] = df["nameDest"]
 
     return out
 
