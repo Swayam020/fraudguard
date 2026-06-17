@@ -36,3 +36,11 @@
 - Pipeline: subsample -> features -> clean -> split. Each stage hash-verified deterministic.
 - Test fraud counts are small (train 123 / val 13 / test 11) — PR-AUC variance risk, flagged in ADR-002.
 - black reformat-then-abort on first commit is normal: re-add, re-commit.
+## Phase 3 — Baseline Models (completed)
+- Leaderboard (val PR-AUC): RF 0.4162 (best) > LogReg 0.3351 > XGB 0.2735.
+- SMOTE did NOT help (PR-AUC 0.3106 vs 0.4162) — only 123 fraud train rows, too thin for synthetic interpolation. SMOTE raised ROC-AUC (0.9190 vs 0.8068) while hurting PR-AUC — textbook case for why PR-AUC is the primary metric here, not ROC-AUC.
+- RF at default threshold 0.5 gives P=R=F1=0 despite best PR-AUC — great ranker, wrong cutoff. Tuned threshold to 0.10 -> F1 0.6667 (P 0.7273, R 0.6154).
+- LogReg has highest ROC-AUC (0.9731) but needs 1202 false positives to catch 12 frauds — cautionary example for why ROC-AUC alone is misleading on rare-event problems.
+- rf_baseline.joblib gitignored (5.1MB > 500KB pre-commit cap). Regenerate via python -m fraudguard.models.persist_baseline after fresh clone.
+- Workflow: forgetting source venv/bin/activate -> ModuleNotFoundError or system python picked up (check with which python). black + ruff both can reformat-then-abort the first commit attempt — re-run the same add+commit, passes 2nd try.
+- CI test count: 25 passed / 3 skipped (joblib absent in fresh clone) is correct, not a regression; locally 28 passed.
