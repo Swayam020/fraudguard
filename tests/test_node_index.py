@@ -54,6 +54,14 @@ class TestAccountIndex:
     def test_account_names_unique(self, account_map: pd.DataFrame) -> None:
         assert not account_map["account_name"].duplicated().any()
 
+    def test_node_type_matches_prefix(self, account_map: pd.DataFrame) -> None:
+        is_customer = account_map["account_name"].str.startswith("C")
+        expected = is_customer.map({True: "user", False: "merchant"})
+        assert (account_map["node_type"] == expected).all()
+
+    def test_node_type_only_user_or_merchant(self, account_map: pd.DataFrame) -> None:
+        assert set(account_map["node_type"].unique()) <= {"user", "merchant"}
+
     def test_covers_all_split_accounts(
         self, account_map: pd.DataFrame, splits: dict[str, pd.DataFrame]
     ) -> None:

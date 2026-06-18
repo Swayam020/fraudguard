@@ -41,10 +41,12 @@ def build_account_index(dfs: dict[str, pd.DataFrame]) -> pd.DataFrame:
         ignore_index=True,
     )
     unique_names = pd.Index(all_names.unique()).sort_values()
+    node_type = ["user" if name.startswith("C") else "merchant" for name in unique_names]
     account_map = pd.DataFrame(
         {
             "account_name": unique_names,
             "account_id": range(len(unique_names)),
+            "node_type": node_type,
         }
     )
     return account_map
