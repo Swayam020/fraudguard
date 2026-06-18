@@ -44,3 +44,9 @@
 - rf_baseline.joblib gitignored (5.1MB > 500KB pre-commit cap). Regenerate via python -m fraudguard.models.persist_baseline after fresh clone.
 - Workflow: forgetting source venv/bin/activate -> ModuleNotFoundError or system python picked up (check with which python). black + ruff both can reformat-then-abort the first commit attempt — re-run the same add+commit, passes 2nd try.
 - CI test count: 25 passed / 3 skipped (joblib absent in fresh clone) is correct, not a regression; locally 28 passed.
+
+## Phase 4.1 — Node Indexing (completed)
+- nameOrig/nameDest were dropped silently by clean.py's positional alignment + reset_index(drop=True) after dropping outliers — fixed at features.py source, not downstream, to avoid re-breaking on every pipeline re-run.
+- 294,797 unique accounts from 200k txns (400k name-slots) is expected for PaySim: merchant (M-prefix) accounts are mostly one-time destinations, low reuse.
+- account_id_map: account_name -> contiguous int. txn_id_map: global txn_id with (split, row_in_split) to trace back to train/val/test rows.
+- Stray __init.py (missing 2nd underscore) sat untouched in graph/ since Phase 0 — git tracked it; cleaned up before adding real module.
