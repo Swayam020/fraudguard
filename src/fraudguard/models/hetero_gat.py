@@ -54,9 +54,16 @@ class HeteroGAT(nn.Module):
             )
         self.head = nn.Linear(hidden, num_classes)
 
+        self.register_buffer("feat_mean", torch.zeros(in_txn))
+        self.register_buffer("feat_std", torch.ones(in_txn))
+
+    def set_feature_stats(self, mean, std):
+        self.feat_mean.copy_(mean)
+        self.feat_std.copy_(std.clamp_min(1e-6))
+
     def encode(self, data):
         return {
-            "transaction": self.txn_lin(data["transaction"].x),
+            "transaction": self.txn_lin((data["transaction"].x - self.feat_mean) / self.feat_std),
             "user": self.user_emb.unsqueeze(0).expand(data["user"].num_nodes, -1),
             "merchant": self.merchant_emb.unsqueeze(0).expand(data["merchant"].num_nodes, -1),
         }
