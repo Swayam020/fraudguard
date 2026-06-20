@@ -50,3 +50,19 @@
 - 294,797 unique accounts from 200k txns (400k name-slots) is expected for PaySim: merchant (M-prefix) accounts are mostly one-time destinations, low reuse.
 - account_id_map: account_name -> contiguous int. txn_id_map: global txn_id with (split, row_in_split) to trace back to train/val/test rows.
 - Stray __init.py (missing 2nd underscore) sat untouched in graph/ since Phase 0 — git tracked it; cleaned up before adding real module.
+
+## 2026-06-20 — Milestone 4.2 (HeteroData) + 4.3 (HeteroGAT)
+
+### 4.2 — graph construction
+- Resolved the open edge-type question by checking the data, not assuming: `nameOrig` is **always** C-prefix (0 M-prefix senders across all splits); `nameDest` is C-prefix ~60% of rows (86343/19851/20379 train/val/test). Those C-dest rows are real C→C transfers (CASH_OUT/TRANSFER), not merchant payments.
+- Decision: **6 edge types**, not the 4 from the handoff plan. Routing a C-dest to a merchant node would be wrong (it's a user node per the prefix-typing from 4.1). Forward edges: user-sends-transaction, transaction-receives-merchant (M-dest, 73427 edges), transaction-paid_to-user (C-dest, 126573 edges); each with its reverse. 73427 + 126573 = 200000 ✓.
+- `build_graph.py` writes `hetero_data.pt` (22M, gitignored — regenerate via `python -m fraudguard.graph.build_graph`). transaction nodes carry `.x` (9 feats), `.y` (isFraud), and train/val/test bool masks. user/merchant are featureless (num_nodes only).
+- Verified: fraud count 147 = 123+13+11 across splits ✓; `data.validate()` passes; all edge indices in bounds.
+- `FEATURE_COLS` is duplicated in build_graph.py (not a shared constant). Minor tech-debt — could centralise later if a 3rd consumer appears.
+
+### 4.3 — model
+- `HeteroGAT`: HeteroConv-wrapped GATConv per edge type, 2 layers, hidden 64, 4 heads, dropout 0.3. Kept the paper's hyperparams but adapted for hetero. `add_self_loops=False` is mandatory for inter-type edges.
+- Featureless user/merchant nodes each get **one shared learnable embedding vector** (expanded across all nodes), NOT a per-node embedding table. With only 147 fraud rows, a 221k-row user table would overfit and waste VRAM. Structure differentiates nodes after message passing.
+- Tiny: 52,354 params. Forward gives (200000, 2) logits.
+- Gotcha: the final-layer convs that produce user/merchant outputs get **no gradient** — we only read `x_dict["transaction"]` after the last layer, so those outputs are dead-ends. This is correct for single-target-type hetero GNNs, not a bug. First version of the backward test naively asserted grads on *all* params and failed; fixed it to assert grads on core params (txn_lin, head, both embeddings) + at least one conv.
+- Training loop deliberately deferred to 4.4 (its own decisions: loss, class weight, LR, full-graph vs mini-batch on 4GB).
