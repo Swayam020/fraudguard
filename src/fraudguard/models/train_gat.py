@@ -25,10 +25,10 @@ def set_seed(seed=SEED):
     torch.cuda.manual_seed_all(seed)
 
 
-def class_weights(y, mask):
+def class_weights(y, mask, beta=1.0):
     yt = y[mask]
     counts = torch.bincount(yt, minlength=2).float()
-    return yt.numel() / (2.0 * counts)
+    return (yt.numel() / (2.0 * counts)) ** beta
 
 
 @torch.no_grad()
@@ -50,8 +50,10 @@ def train(
     patience=20,
     ckpt=CKPT,
     verbose=True,
+    seed=SEED,
+    weight_beta=0.75,
 ):
-    set_seed()
+    set_seed(seed)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     data = torch.load(GRAPH_PT, weights_only=False).to(device)
     model = HeteroGAT().to(device)
@@ -60,7 +62,7 @@ def train(
     y = data["transaction"].y
     train_mask = data["transaction"].train_mask
     val_mask = data["transaction"].val_mask
-    w = class_weights(y, train_mask).to(device)
+    w = class_weights(y, train_mask, weight_beta).to(device)
 
     tx = data["transaction"].x[train_mask]
     model.set_feature_stats(tx.mean(0), tx.std(0))

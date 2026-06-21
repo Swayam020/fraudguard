@@ -40,6 +40,14 @@ class TestClassWeights:
         assert torch.isclose(w[0], torch.tensor(4 / 6.0))
         assert torch.isclose(w[1], torch.tensor(4 / 2.0))
 
+    def test_beta_shrinks_fraud_weight(self):
+        y = torch.tensor([0, 0, 0, 1])
+        mask = torch.ones(4, dtype=torch.bool)
+        full = train_gat.class_weights(y, mask)
+        soft = train_gat.class_weights(y, mask, beta=0.5)
+        assert soft[1] < full[1]
+        assert torch.isclose(soft[1], full[1] ** 0.5)
+
 
 class TestTrainSmoke:
     def test_short_run_writes_checkpoint(self, tmp_path):
